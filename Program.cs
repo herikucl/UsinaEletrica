@@ -1,4 +1,5 @@
 ﻿using System;
+#include <math.h>
 
 namespace UsinaEletrica
 {
@@ -177,6 +178,75 @@ namespace UsinaEletrica
             }
 
         }
+
+        class Controle
+        {
+            
+        }
+        class Gerador 
+        { 
+            public int QntTurbinas;
+            public int QntGeradores;
+            private float PotenciaPorRev;
+            public float TempoPorRev;
+            public float EnergiaGerada;
+            public float GastoDeEnergia;
+            public bool Alarme;
+
+   
+        }
+        class Hidreletrica : Gerador 
+        {
+            private float AlturaDaAgua;
+            private bool Comportas;
+
+            public float getTempoPorRev()
+            {
+                TempoPorRev = ((float)Math.Sqrt(2 * 9.81 * AlturaDaAgua))/2;
+                return TempoPorRev;
+            }
+
+            public float getGastoDeEnergiaM()
+            {
+                return GastoDeEnergia;
+            }
+        }
+
+        class Eolico : Gerador
+        {
+            private float VelocidadeVento;
+            private float VelocidadePas;
+            private float VelocidadeRelativa;
+            private float Direção;
+            private float DireçãoNacele;
+            private float DireçãoPas;
+
+            public void setVelocidadeRelativa()
+            {
+                VelocidadeRelativa = (float)Math.Sqrt((float)Math.Pow(VelocidadeVento, 2) * (float)Math.Pow(VelocidadePas, 2));
+            }
+            public void GirarConjunto()
+            {
+                DireçãoNacele = Direção;
+            }
+            public void GirarPas()
+            {
+                setVelocidadeRelativa();
+                DireçãoPas = (float)Math.Asin(VelocidadeVento/VelocidadeRelativa);
+            }
+            public float getTempoPorRev()
+            {
+                TempoPorRev = (float)(2 * Math.PI) / VelocidadePas;
+                return TempoPorRev;
+            }
+
+
+        }
+        class Nuclear : Gerador
+        {
+
+        }
+
 
 
     }//usina
