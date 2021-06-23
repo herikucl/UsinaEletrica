@@ -10,6 +10,7 @@ namespace UsinaEletrica
         private Tecnico[] Tec = new Tecnico[20];
         private RecursosHumanos[] RH = new RecursosHumanos[10];
         private float SalarioFuncionarios;
+        private float Receita;
         private float PreçoKW;
         private float EnergiaMensal;
         private float ValorProduzido;
@@ -60,8 +61,11 @@ namespace UsinaEletrica
         }
         public float getValorLiquido()
         {
-            ValorLiquido = ValorGerado() - SalarioFuncionarios;
             return ValorLiquido;
+        }
+        public float getReceita()
+        {
+            return Receita;
         }
         public float ValorGerado()
         {
@@ -71,12 +75,16 @@ namespace UsinaEletrica
         }
         public float Lucro()
         {
-            EnergiaMensal = (Controlador.getEnergiaTotalM() - Controlador.getGastoTotalM()) / 1000;
-            LucroMensal = EnergiaMensal * PreçoKW;
+            LucroMensal = ((Controlador.getEnergiaTotalM() - Controlador.getGastoTotalM()) / 1000) * PreçoKW;
+            return LucroMensal;
+        }
+        public float getLucroMensal()
+        {
             return LucroMensal;
         }
         public void PagarFuncionarios()
         {
+            SalarioFuncionarios = 0;
             for (int i = 0; i < 50; i++)
             {
                 if (Eng[i] != null)
@@ -98,7 +106,8 @@ namespace UsinaEletrica
                     SalarioFuncionarios += RH[i].getSalario();
                 }
             }
-            ValorProduzido -= SalarioFuncionarios;
+            setValorLiquido(LucroMensal-SalarioFuncionarios);
+            Receita += ValorLiquido;
         }
         public void GerarListaID()
         {
@@ -152,6 +161,10 @@ namespace UsinaEletrica
         public int getListaID(int i)
         {
             return IdFuncionarios[i];
+        }
+        public void setValorLiquido(float p)
+        {
+            ValorLiquido = p;
         }
         public void Salario(int id,float p)
         {
@@ -464,7 +477,7 @@ namespace UsinaEletrica
                 }
             }
         }
-        public void setEnergiaTotalD()
+        public void setEnergiaTotalM()
         {
             for (int i = 0; i < 20; i++)
             {
@@ -485,7 +498,7 @@ namespace UsinaEletrica
                 }  
             }
         }
-        public void setGastoTotalD()
+        public void setGastoTotalM()
         {
             
             for (int i = 0; i < 20; i++)
@@ -542,8 +555,10 @@ namespace UsinaEletrica
         }
         public void Atualizar()
         {
-            setEnergiaTotalD();
-            setGastoTotalD();
+            EnergiaTotal = 0;
+            GastoTotal = 0;
+            setEnergiaTotalM();
+            setGastoTotalM();
         }
         public void Extrato()
         {
@@ -565,7 +580,7 @@ namespace UsinaEletrica
 
         public void AtualizarP()
         {
-            EnergiaGeradaD();
+            EnergiaGeradaM();
         }
         public void setQntTurbinas(int t)
         {
@@ -615,9 +630,9 @@ namespace UsinaEletrica
         {
             GastoDeEnergia = g;
         }
-        public void EnergiaGeradaD()
+        public void EnergiaGeradaM()
         {
-            EnergiaGerada = getRevPorMin() * getPotenciaPorRev() * 1440;
+            EnergiaGerada = getRevPorMin() * getPotenciaPorRev() * 43800;
         }
     }
     class Hidreletrica : Gerador
@@ -884,9 +899,11 @@ namespace UsinaEletrica
             Rh4.Contratar(Itaipu, Tec4);
             Rh5.Contratar(Itaipu, Eng5);
             Rh5.Contratar(Itaipu, Tec5);
-            for (int i = 1; i <= 360; i++)
+
+
+            for (int i = 1; i <= 12; i++)
             {
-                if (i == 12)
+                if (i == 2)
                 {
                     Vent1.setVelocidadeVento(10);
                     Vent1.setVelocidadePas(5);                 
@@ -894,17 +911,17 @@ namespace UsinaEletrica
                     Vent2.setVelocidadePas(2);
                     Vent3.setVelocidadeVento(30);
                     Vent3.setVelocidadePas(15);
-                }else if (i == 22)
+                }else if (i == 3)
                 {
                     Rad1.setMaterialUtilizado("");
                     Rad2.setMaterialUtilizado("");
                     Rad3.setMaterialUtilizado("");
-                }else if (i == 67)
+                }else if (i == 5)
                 {
                     Hidro1.setAltura(20);
                     Hidro1.setAltura(5);
                     Hidro1.setAltura(40);
-                }else if (i == 181)
+                }else if (i == 8)
                 {
                     Hidro1.setAltura(100);
                     Hidro2.setAltura(120);
@@ -919,15 +936,10 @@ namespace UsinaEletrica
                     Vent3.setVelocidadeVento(80);
                     Vent3.setVelocidadePas(40);
                 }
-
-               
                 Ctrl.Atualizar();
-                if (i%30==0)
-                {
-                    Itaipu.PagarFuncionarios();
-                    Console.Write("Dia de pagamento: ");
-                }
-                Console.WriteLine("Dia {0}-----Valor gerado: R${1}  /  Lucro: R${2}  / Valor liquido: R${3}",i, Itaipu.ValorGerado(),Itaipu.Lucro(),Itaipu.getValorLiquido());
+                Itaipu.Lucro();
+                Itaipu.PagarFuncionarios();
+                Console.WriteLine("Mês {0}-----Valor gerado: R${1}  /  Lucro: R${2}  / Valor liquido: R${3}  /  Receita: R${4}",i, Itaipu.ValorGerado(),Itaipu.getLucroMensal(),Itaipu.getValorLiquido(),Itaipu.getReceita());
             }
         }
     }
