@@ -14,11 +14,7 @@ namespace UsinaEletrica
         private float EnergiaMensal;
         private float LucroMensal;
         private int[] IdFuncionarios= new int[81];
-        
-        public Usina(float p)
-        {
-            PreçoKW = p;
-        }
+
         public void setControlador(Controle c)
         {
             Controlador = c;
@@ -27,17 +23,18 @@ namespace UsinaEletrica
         {
             for (int i = 0; i < 50; i++)
             {
-                if (Eng[i].getID() == 0)
+                if (Eng[i] == null)
                 {
+                    Eng[i] = new Engenheiro();
                     Eng[i] = e;
                 }
             }
         }
         public void setTecnico(Tecnico t)
         {
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 20; i++)
             {
-                if (Tec[i].getID() == 0)
+                if (Tec[i] == null)
                 {
                     Tec[i] = t;
                 }
@@ -47,11 +44,15 @@ namespace UsinaEletrica
         {
             for (int i = 0; i < 10; i++)
             {
-                if (RH[i].getID() == 0)
+                if (RH[i] == null)
                 {
                     RH[i] = r;
                 }
             }
+        }
+        public void setPreçoKW(float p)
+        {
+            PreçoKW = p;
         }
         public float Lucro()
         {
@@ -344,7 +345,7 @@ namespace UsinaEletrica
     }
     class RecursosHumanos : Funcionarios
     {
-        private Usina UsinaRH;
+        private Usina UsinaRH = new Usina();
         
         public RecursosHumanos() { }
         public RecursosHumanos(Usina usina,string nome, int numc, int rg, long cpf, char sx, int id, float sal, DateTime i, string c, string est, string bairro, string rua, int num, int cep)
@@ -412,37 +413,36 @@ namespace UsinaEletrica
         private int QntGeradoresTotal;
         private float EnergiaTotal;
         private float GastoTotal;
-        
         public void setHidreletrica(Hidreletrica h)
         {
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 20; i++)
             {
-                if (Hidro[i].getQntTurbinas() == 0)
+                if (Hidro[i] == null)
                 {
                     Hidro[i] = h;
-                    i = 51;
+                    i = 21;
                 }
             }
         }
         public void setNuclear(Nuclear n)
         {
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 20; i++)
             {
-                if (Rad[i].getQntTurbinas() == 0)
+                if (Rad[i]== null)
                 {
                     Rad[i] = n;
-                    i = 51;
+                    i = 21;
                 }
             }
         }
         public void setEolica(Eolico e)
         {
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 20; i++)
             {
-                if (Vent[i].getQntTurbinas() == 0)
+                if (Vent[i]== null)
                 {
                     Vent[i] = e;
-                    i = 51;
+                    i = 21;
                 }
             }
         }
@@ -510,13 +510,13 @@ namespace UsinaEletrica
     }
     class Gerador
     {
-        private int QntTurbinas;
-        private int QntGeradores;
-        private float PotenciaPorRev;
-        private float RevPorMin;
-        private float EnergiaGerada;
-        private float GastoDeEnergia;
-        private bool Alarme;
+        private int QntTurbinas=0;
+        private int QntGeradores=0;
+        private float PotenciaPorRev=0;
+        private float RevPorMin=0;
+        private float EnergiaGerada=0;
+        private float GastoDeEnergia=0;
+        private bool Alarme=false;
 
         public void AtualizarP()
         {
@@ -578,8 +578,8 @@ namespace UsinaEletrica
     
     class Hidreletrica : Gerador
     {
-        private float AlturaDaAgua;
-        private bool Comportas;
+        private float AlturaDaAgua=0;
+        private bool Comportas=false;
 
         public void Atualizar()
         {
@@ -759,7 +759,69 @@ namespace UsinaEletrica
         {
             static void Main(string[] args)
             {
+            Usina Itaipu = new Usina();
+            Hidreletrica Hidro1 = new Hidreletrica(1, 1, 100);
+            Hidreletrica Hidro2 = new Hidreletrica(2, 2, 50);
+            Hidreletrica Hidro3 = new Hidreletrica(3, 3, 80);
+            Nuclear Rad1 = new Nuclear(4, 4, 500);
+            Nuclear Rad2 = new Nuclear(5, 5, 800);
+            Nuclear Rad3 = new Nuclear(6, 6, 700);
+            Eolico Vent = new Eolico(7, 7, 500);
+            Eolico Vent2 = new Eolico(8, 8, 300);
+            Eolico Vent3 = new Eolico(9, 9, 200);
+            Controle Ctrl = new Controle();
+            Ctrl.setHidreletrica(Hidro1);
+            Ctrl.setHidreletrica(Hidro2);
+            Ctrl.setHidreletrica(Hidro3);
+            Ctrl.setNuclear(Rad1);
+            Ctrl.setNuclear(Rad2);
+            Ctrl.setNuclear(Rad3);
+            Ctrl.setEolica(Vent);
+            Ctrl.setEolica(Vent2);
+            Ctrl.setEolica(Vent3);
+            Itaipu.setControlador(Ctrl);
+            Engenheiro Eng1 = new Engenheiro();
+            Engenheiro Eng2 = new Engenheiro();
+            Engenheiro Eng3 = new Engenheiro();
+            Engenheiro Eng4 = new Engenheiro();
+            Engenheiro Eng5 = new Engenheiro();
+            Tecnico Tec1 = new Tecnico();
+            Tecnico Tec2 = new Tecnico();
+            Tecnico Tec3 = new Tecnico();
+            Tecnico Tec4 = new Tecnico();
+            Tecnico Tec5 = new Tecnico();
+            RecursosHumanos Chefe = new RecursosHumanos(); Chefe.setNomeCompleto("Boss");
+            RecursosHumanos Rh1 = new RecursosHumanos(); Rh1.setNomeCompleto("Cobaia1");
+            RecursosHumanos Rh2 = new RecursosHumanos(); Rh2.setNomeCompleto("Cobaia2");
+            RecursosHumanos Rh3 = new RecursosHumanos(); Rh3.setNomeCompleto("Cobaia3");
+            RecursosHumanos Rh4 = new RecursosHumanos(); Rh4.setNomeCompleto("Cobaia4");
+            RecursosHumanos Rh5 = new RecursosHumanos(); Rh5.setNomeCompleto("Cobaia5");
+            Chefe.Contratar(Rh1);
+            Chefe.Contratar(Rh2);
+            Chefe.Contratar(Rh3);
+            Chefe.Contratar(Rh4);
+            Chefe.Contratar(Rh5);
+            Rh1.Contratar(Eng1);
+            Rh1.Contratar(Tec1);
+            Rh2.Contratar(Eng2);
+            Rh2.Contratar(Tec2);
+            Rh3.Contratar(Eng3);
+            Rh3.Contratar(Tec3);
+            Rh4.Contratar(Eng4);
+            Rh4.Contratar(Tec4);
+            Rh5.Contratar(Eng5);
+            Rh5.Contratar(Tec5);
 
-            }
+
+
+
+
+
+
+
+
+
+
         }
     }
+}
