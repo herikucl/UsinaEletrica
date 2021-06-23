@@ -13,6 +13,46 @@ namespace UsinaEletrica
         private float PreçoKW;
         private float EnergiaMensal;
         private float LucroMensal;
+        private int[] IdFuncionarios= new int[81];
+        
+        public Usina(float p)
+        {
+            PreçoKW = p;
+        }
+        public void setControlador(Controle c)
+        {
+            Controlador = c;
+        }
+        public void setEngenheiro(Engenheiro e)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                if (Eng[i].getID() == 0)
+                {
+                    Eng[i] = e;
+                }
+            }
+        }
+        public void setTecnico(Tecnico t)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                if (Tec[i].getID() == 0)
+                {
+                    Tec[i] = t;
+                }
+            }
+        }
+        public void setRecursosHumanos(RecursosHumanos r)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (RH[i].getID() == 0)
+                {
+                    RH[i] = r;
+                }
+            }
+        }
 
         public float Lucro()
         {
@@ -39,10 +79,82 @@ namespace UsinaEletrica
             }
             LucroMensal = ValorGerado() - SalarioFuncionarios;
         }
-        public int getID(int i)
+        public void GerarListaID()
         {
-            return Eng[i].getID();
+            for (int i = 1; i < 80; i++)
+            {
+                IdFuncionarios[i] = Eng[i].getID();
+                if (i > 50)
+                {
+                    IdFuncionarios[i] = Tec[i].getID();
+                    if (i > 70)
+                    {
+                        IdFuncionarios[i] = RH[i].getID();
+                    }
+                }
+            }
         }
+        public void setListaID(int i,string c)
+        {
+            if(i>0 & i < 51)
+            {
+                Eng[i].setCargo(c);
+            }else if(i>50 & i<71){
+                Tec[i - 50].setCargo(c);
+            }else if(i>70 & i < 81)
+            {
+                RH[i - 70].setCargo(c);
+            }  
+        }
+        public void Demissão(int id)
+        {
+            for (int i = 1; i < 80; i++)
+            {
+                if (getListaID(i) == id)
+                {
+                    if (i > 0 & i < 51)
+                    {
+                        Eng[i] = new Engenheiro();
+                    }
+                    else if (i > 50 & i < 71)
+                    {
+                        Tec[i] = new Tecnico();
+                    }
+                    else if (i > 70 & i < 81)
+                    {
+                        RH[i] = new RecursosHumanos();
+                    }
+                }
+            }
+
+        }
+        public int getListaID(int i)
+        {
+            return IdFuncionarios[i];
+        }
+        public void Salario(int id,float p)
+        {
+            for (int i = 1; i < 80; i++)
+            {
+                if (getListaID(i) == id)
+                {
+                    if (i > 0 & i < 51)
+                    {
+                        Eng[i].setSalario(p);
+                    }
+                    else if (i > 50 & i < 71)
+                    {
+                        Tec[i].setSalario(p);
+                    }
+                    else if (i > 70 & i < 81)
+                    {
+                        RH[i].setSalario(p);
+                    }
+                }
+            }
+        }
+
+
     }
     class Funcionarios
     {
@@ -54,7 +166,6 @@ namespace UsinaEletrica
         private int Id;
         private float Salario;
         private DateTime DataDeIngresso;
-        private DateTime DataDeSaida;
         private string Cargo;
         private string Estado;
         private string Bairro;
@@ -71,7 +182,6 @@ namespace UsinaEletrica
             Console.WriteLine("id:{0}", Id);
             Console.WriteLine("Salario:{0}", Salario);
             Console.WriteLine("DataDeIngresso:{0}", DataDeIngresso);
-            Console.WriteLine("DataDeSaida:{0}", DataDeSaida);
             Console.WriteLine("Cargo:{0}", Cargo);
             Console.WriteLine("Estado:{0}", Estado);
             Console.WriteLine("Bairro:{0}", Bairro);
@@ -120,10 +230,6 @@ namespace UsinaEletrica
         {
             DataDeIngresso = i;
         }
-        public void setDataDeSaida(DateTime o)
-        {
-            DataDeSaida = o;
-        }
         public void setCargo(string c)
         {
             Cargo = c;
@@ -148,7 +254,6 @@ namespace UsinaEletrica
         {
             Cep = c;
         }
-        
 
 
     }
@@ -158,6 +263,7 @@ namespace UsinaEletrica
         private string ExperienciaProfissional;
         private DateTime VencimentoCrea;
         
+        public Engenheiro(){ }
         public Engenheiro(string nome, int numc,int rg, long cpf, char sx, int id, float sal,DateTime i, string c, string est, string bairro, string rua, int num, int cep,string g, string exp, DateTime v)
         {
             setNomeCompleto(nome);
@@ -208,6 +314,7 @@ namespace UsinaEletrica
     {
         private string Formação;
 
+        public Tecnico() { }
         public Tecnico(string nome, int numc, int rg, long cpf, char sx, int id, float sal, DateTime i, string c, string est, string bairro, string rua, int num, int cep, string f)
         {
             setNomeCompleto(nome);
@@ -234,9 +341,12 @@ namespace UsinaEletrica
     }
     class RecursosHumanos : Funcionarios
     {
-
-        public RecursosHumanos(string nome, int numc, int rg, long cpf, char sx, int id, float sal, DateTime i, string c, string est, string bairro, string rua, int num, int cep)
+        private Usina UsinaRH;
+        
+        public RecursosHumanos() { }
+        public RecursosHumanos(Usina usina,string nome, int numc, int rg, long cpf, char sx, int id, float sal, DateTime i, string c, string est, string bairro, string rua, int num, int cep)
         {
+            UsinaRH = usina;
             setNomeCompleto(nome);
             setContato(numc);
             setCpf(cpf);
@@ -259,44 +369,36 @@ namespace UsinaEletrica
 
         public void Promover(int id, string c)
         {
-            for (int i = 0; i < 50; i++)
+            for (int i = 1; i < 80; i++)
             {
-                if (Usina.getID(i) == id)
+                if (UsinaRH.getListaID(i) == id)
                 {
-                    setCargo(c);
+                    UsinaRH.setListaID(i, c);
                 }
             }
-            for (int i = 0; i < 20; i++)
-            {
-                if (Tec[i].getId() == id)
-                {
-                    Tec[i].setCargo(c);
-                }
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                if (RH[i].getId() == id)
-                {
-                    RH[i].setCargo(c);
-                }
-            }
-
         }
-        public void Contratar()
+        public void Contratar(Engenheiro e)
         {
-
+            UsinaRH.setEngenheiro(e);  
         }
-
-        public void Demitir()
+        public void Contratar(RecursosHumanos r)
         {
-
+            UsinaRH.setRecursosHumanos(r);
         }
-
-        public void DefinirSalario()
+        public void Contratar(Tecnico t)
         {
-
+            UsinaRH.setTecnico(t);
         }
 
+        public void Demitir(int id)
+        {
+            UsinaRH.Demissão(id);
+        }
+
+        public void DefinirSalario(int id,float p)
+        {
+            UsinaRH.Salario(id, p);
+        }
     }
     class Controle
     {
@@ -307,12 +409,40 @@ namespace UsinaEletrica
         private int QntGeradoresTotal;
         private float EnergiaTotal;
         private float GastoTotal;
-
-        public Controle()
+        public void setHidreletrica(Hidreletrica h)
         {
-            
-        } 
-        public float getEnergiaTotalM()
+            for (int i = 0; i < 50; i++)
+            {
+                if (Hidro[i].getQntTurbinas() == 0)
+                {
+                    Hidro[i] = h;
+                    i = 51;
+                }
+            }
+        }
+        public void setNuclear(Nuclear n)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                if (Rad[i].getQntTurbinas() == 0)
+                {
+                    Rad[i] = n;
+                    i = 51;
+                }
+            }
+        }
+        public void setEolica(Eolico e)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                if (Vent[i].getQntTurbinas() == 0)
+                {
+                    Vent[i] = e;
+                    i = 51;
+                }
+            }
+        }
+        public void setEnergiaTotalM()
         {
             for (int i = 0; i < 20; i++)
             {
@@ -320,9 +450,8 @@ namespace UsinaEletrica
                 EnergiaTotal += Rad[i].getEnergiaGeradaM();
                 EnergiaTotal += Vent[i].getEnergiaGeradaM();
             }
-            return EnergiaTotal;
         }
-        public float getGastoTotalM()
+        public void setGastoTotalM()
         {
             for (int i = 0; i < 20; i++)
             {
@@ -330,9 +459,8 @@ namespace UsinaEletrica
                 GastoTotal += Rad[i].getGastoDeEnergiaM();
                 GastoTotal += Vent[i].getGastoDeEnergiaM();
             }
-            return GastoTotal;
         }
-        public int getQntTurbinasTotal()
+        public void setQntTurbinasTotal()
         {
             for (int i = 0; i < 20; i++)
             {
@@ -340,9 +468,8 @@ namespace UsinaEletrica
                 QntTurbinasTotal += Rad[i].getQntTurbinas();
                 QntTurbinasTotal += Vent[i].getQntTurbinas();
             }
-            return QntTurbinasTotal;
         }
-        public int getQntGeradoresTotal()
+        public void setQntGeradoresTotal()
         {
             for (int i = 0; i < 20; i++)
             {
@@ -350,12 +477,33 @@ namespace UsinaEletrica
                 QntGeradoresTotal += Rad[i].getQntGeradores();
                 QntGeradoresTotal += Vent[i].getQntGeradores();
             }
+        }
+        public float getEnergiaTotalM()
+        {
+            return EnergiaTotal;
+        }
+        public float getGastoTotalM()
+        {
+            return GastoTotal;
+        }
+        public int getQntTurbinasTotal()
+        {
+            return QntTurbinasTotal;
+        }
+        public int getQntGeradoresTotal()
+        {
             return QntGeradoresTotal;
+        }
+        public void Atualizar()
+        {
+            setEnergiaTotalM();
+            setGastoTotalM();
+            setQntGeradoresTotal();
+            setQntTurbinasTotal();
         }
     }
     class Gerador
     {
-
         private int QntTurbinas;
         private int QntGeradores;
         private float PotenciaPorRev;
@@ -404,9 +552,6 @@ namespace UsinaEletrica
         {
             return RevPorMin;
         }
-
-
-
     }
     class Hidreletrica : Gerador
     {
@@ -511,7 +656,6 @@ namespace UsinaEletrica
         }
 
     }
-
     class Program
         {
             static void Main(string[] args)
