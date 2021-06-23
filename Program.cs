@@ -53,7 +53,6 @@ namespace UsinaEletrica
                 }
             }
         }
-
         public float Lucro()
         {
             return LucroMensal;
@@ -154,6 +153,10 @@ namespace UsinaEletrica
             }
         }
 
+        public void Atualizar()
+        {
+            Console.WriteLine(ValorGerado()); 
+        }
 
     }
     class Funcionarios
@@ -409,6 +412,7 @@ namespace UsinaEletrica
         private int QntGeradoresTotal;
         private float EnergiaTotal;
         private float GastoTotal;
+        
         public void setHidreletrica(Hidreletrica h)
         {
             for (int i = 0; i < 50; i++)
@@ -442,22 +446,26 @@ namespace UsinaEletrica
                 }
             }
         }
-        public void setEnergiaTotalM()
+        public void setEnergiaTotalD()
         {
             for (int i = 0; i < 20; i++)
             {
-                EnergiaTotal += Hidro[i].getEnergiaGeradaM();
-                EnergiaTotal += Rad[i].getEnergiaGeradaM();
-                EnergiaTotal += Vent[i].getEnergiaGeradaM();
+                Hidro[i].Atualizar();
+                Rad[i].Atualizar();
+                Vent[i].Atualizar();
+                EnergiaTotal += Hidro[i].getEnergiaGerada();
+                EnergiaTotal += Rad[i].getEnergiaGerada();
+                EnergiaTotal += Vent[i].getEnergiaGerada();
             }
         }
-        public void setGastoTotalM()
+        public void setGastoTotalD()
         {
+            
             for (int i = 0; i < 20; i++)
             {
-                GastoTotal += Hidro[i].getGastoDeEnergiaM();
-                GastoTotal += Rad[i].getGastoDeEnergiaM();
-                GastoTotal += Vent[i].getGastoDeEnergiaM();
+                GastoTotal += Hidro[i].getGastoDeEnergia();
+                GastoTotal += Rad[i].getGastoDeEnergia();
+                GastoTotal += Vent[i].getGastoDeEnergia();
             }
         }
         public void setQntTurbinasTotal()
@@ -496,10 +504,8 @@ namespace UsinaEletrica
         }
         public void Atualizar()
         {
-            setEnergiaTotalM();
-            setGastoTotalM();
-            setQntGeradoresTotal();
-            setQntTurbinasTotal();
+            setEnergiaTotalD();
+            setGastoTotalD();
         }
     }
     class Gerador
@@ -512,6 +518,10 @@ namespace UsinaEletrica
         private float GastoDeEnergia;
         private bool Alarme;
 
+        public void AtualizarP()
+        {
+            EnergiaGeradaD();
+        }
         public void setQntTurbinas(int t)
         {
             QntTurbinas = t;
@@ -532,11 +542,11 @@ namespace UsinaEletrica
         {
             Alarme = e;
         }
-        public float getEnergiaGeradaM()
+        public float getEnergiaGerada()
         {
             return EnergiaGerada;
         }
-        public float getGastoDeEnergiaM()
+        public float getGastoDeEnergia()
         {
             return GastoDeEnergia;
         }
@@ -552,12 +562,35 @@ namespace UsinaEletrica
         {
             return RevPorMin;
         }
+        public float getPotenciaPorRev()
+        {
+            return PotenciaPorRev;
+        }  
+        public void setGastoDeEnergia(float g)
+        {
+            GastoDeEnergia = g;
+        }
+        public void EnergiaGeradaD()
+        {
+            EnergiaGerada = getRevPorMin() * getPotenciaPorRev() * 1440;
+        }
     }
+    
     class Hidreletrica : Gerador
     {
         private float AlturaDaAgua;
         private bool Comportas;
 
+        public void Atualizar()
+        {
+            RevPorMin();
+            VerificarNivel();
+            if (Comportas == true)
+            {
+                AlturaDaAgua -= 50;
+            }
+            AtualizarP();
+        }
         public Hidreletrica(int turb, int ger, float potrev)
         {
             setQntTurbinas(turb);
@@ -565,18 +598,59 @@ namespace UsinaEletrica
             setPotenciaPorRev(potrev);
         }
 
-        public float RevPorMin()
+        public void RevPorMin()
         {
             setRevPorMin(((float)Math.Sqrt(2 * 9.81 * AlturaDaAgua)) / 2);
-            return getRevPorMin();
+        }
+        public void setAltura(float h)
+        {
+            AlturaDaAgua = h;
+        }
+        public void VerificarNivel()
+        {
+            if (AlturaDaAgua > 140)
+            {
+                setAlarme(true);
+                Comportas = true;
+            }
+            else
+            {
+                setAlarme(true);
+                Comportas = false;
+            }
         }
 
 
     }
     class Nuclear : Gerador
     {
+
         private string MaterialUtilizado;
-        private float MedidorRadiação;
+        private float MedidorRadiação=0;
+
+        public void Atualizar()
+        {
+            RevPorMin();
+            switch (MaterialUtilizado)
+            {
+                case "Césio":
+                    setMedidorRadiação((float)1.37);
+                    break;
+                case "Plutonio":
+                    setMedidorRadiação((float)0.94);
+                    break;
+                case "Uranio":
+                    setMedidorRadiação((float)0.92);
+                    break;
+                case "Radio":
+                    setMedidorRadiação((float)0.88);
+                    break;
+                default:
+                    setMedidorRadiação((float)-0.5);
+                    break;
+            }
+            AtualizarP();
+        }
         public Nuclear(int turb, int ger, float potrev)
         {
             setQntTurbinas(turb);
@@ -600,7 +674,7 @@ namespace UsinaEletrica
                     setRevPorMin(94);
                     break;
                 default:
-                    setRevPorMin(50);
+                    setRevPorMin(0);
                     break;
 
             }
@@ -618,8 +692,14 @@ namespace UsinaEletrica
         {
             setAlarme(false);
         }
-
-
+        public void setMaterialUtilizado(string r)
+        {
+            MaterialUtilizado = r;
+        }
+        public void setMedidorRadiação(float m)
+        {
+            MedidorRadiação += m;
+        }
     }
     class Eolico : Gerador
     {
@@ -629,6 +709,13 @@ namespace UsinaEletrica
         private float Direção;
         private float DireçãoNacele;
         private float DireçãoPas;
+
+        public void Atualizar()
+        {
+            setVelocidadeRelativa();
+            RevPorMin();
+            AtualizarP();
+        }
         public Eolico(int turb, int ger, float potrev)
         {
             setQntTurbinas(turb);
@@ -653,6 +740,18 @@ namespace UsinaEletrica
             setRevPorMin((float)(2 * Math.PI) / VelocidadePas);
             return getRevPorMin();
 
+        }
+        public void setVelocidadeVento(float v)
+        {
+            VelocidadeVento = v;
+        }
+        public void setDireção(float d)
+        {
+            Direção = d;
+        }
+        public void setVelocidadePas(float vp)
+        {
+            VelocidadePas = vp;
         }
 
     }
