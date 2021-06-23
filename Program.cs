@@ -47,10 +47,11 @@ namespace UsinaEletrica
     class Funcionarios
     {
         private string NomeCompleto;
+        private int Contato;
         private long Cpf;
         private int Rg;
         private char Sexo;
-        private int id;
+        private int Id;
         private float Salario;
         private DateTime DataDeIngresso;
         private DateTime DataDeSaida;
@@ -67,7 +68,7 @@ namespace UsinaEletrica
             Console.WriteLine("Cpf: {0}", Cpf);
             Console.WriteLine("Rg: {0}", Rg);
             Console.WriteLine("Sexo:{0}", Sexo);
-            Console.WriteLine("id:{0}", id);
+            Console.WriteLine("id:{0}", Id);
             Console.WriteLine("Salario:{0}", Salario);
             Console.WriteLine("DataDeIngresso:{0}", DataDeIngresso);
             Console.WriteLine("DataDeSaida:{0}", DataDeSaida);
@@ -85,12 +86,70 @@ namespace UsinaEletrica
         }
         public int getID()
         {
-            return id;
+            return Id;
         }
-        public void setCargo(string a)
+        public void setNomeCompleto(string n) 
         {
-            Cargo = a;
+            NomeCompleto = n;
         }
+        public void setContato(int i)
+        {
+            Contato = i;
+        }
+        public void setCpf(long c)
+        {
+            Cpf = c;
+        }
+        public void setRg(int r)
+        {
+            Rg = r;
+        }
+        public void setSexo(char s)
+        {
+            Sexo = s;
+        }
+        public void setId(int i)
+        {
+            Id = i;
+        }
+        public void setSalario(float s)
+        {
+            Salario = s;
+        }
+        public void setDataDeIngresso(DateTime i)
+        {
+            DataDeIngresso = i;
+        }
+        public void setDataDeSaida(DateTime o)
+        {
+            DataDeSaida = o;
+        }
+        public void setCargo(string c)
+        {
+            Cargo = c;
+        }
+        public void setEstado(string e)
+        {
+            Estado = e;
+        }
+        public void setBairro(string b)
+        {
+            Bairro = b;
+        }
+        public void setRua(string r)
+        {
+            Rua = r;
+        }
+        public void setNumero(int n)
+        {
+            Numero = n;
+        }
+        public void setCep(int c)
+        {
+            Cep = c;
+        }
+        
+
 
     }
     class Engenheiro : Funcionarios
@@ -99,9 +158,25 @@ namespace UsinaEletrica
         private string ExperienciaProfissional;
         private DateTime VencimentoCrea;
         
-        public Engenheiro(string g, string exp, DateTime V)
+        public Engenheiro(string nome, int numc,int rg, long cpf, char sx, int id, float sal,DateTime i, string c, string est, string bairro, string rua, int num, int cep,string g, string exp, DateTime v)
         {
-
+            setNomeCompleto(nome);
+            setContato(numc);
+            setCpf(cpf);
+            setRg(rg);
+            setSexo(sx);
+            setId(id);
+            setSalario(sal);
+            setDataDeIngresso(i);
+            setCargo(c);
+            setEstado(est);
+            setBairro(bairro);
+            setRua(rua); 
+            setNumero(num);
+            setCep(cep);
+            Graduação=g;
+            ExperienciaProfissional=exp;
+            VencimentoCrea=v;
         }
         public void VerificarValidadeCrea()
         {
@@ -133,7 +208,24 @@ namespace UsinaEletrica
     {
         private string Formação;
 
-
+        public Tecnico(string nome, int numc, int rg, long cpf, char sx, int id, float sal, DateTime i, string c, string est, string bairro, string rua, int num, int cep, string f)
+        {
+            setNomeCompleto(nome);
+            setContato(numc);
+            setCpf(cpf);
+            setRg(rg);
+            setSexo(sx);
+            setId(id);
+            setSalario(sal);
+            setDataDeIngresso(i);
+            setCargo(c);
+            setEstado(est);
+            setBairro(bairro);
+            setRua(rua);
+            setNumero(num);
+            setCep(cep);
+            Formação = f;
+        }
         public void FichaCompleta()
         {
             Ficha();
@@ -142,6 +234,24 @@ namespace UsinaEletrica
     }
     class RecursosHumanos : Funcionarios
     {
+
+        public RecursosHumanos(string nome, int numc, int rg, long cpf, char sx, int id, float sal, DateTime i, string c, string est, string bairro, string rua, int num, int cep)
+        {
+            setNomeCompleto(nome);
+            setContato(numc);
+            setCpf(cpf);
+            setRg(rg);
+            setSexo(sx);
+            setId(id);
+            setSalario(sal);
+            setDataDeIngresso(i);
+            setCargo(c);
+            setEstado(est);
+            setBairro(bairro);
+            setRua(rua);
+            setNumero(num);
+            setCep(cep);
+        }
         public void FichaCompleta()
         {
             Ficha();
@@ -198,6 +308,10 @@ namespace UsinaEletrica
         private float EnergiaTotal;
         private float GastoTotal;
 
+        public Controle()
+        {
+            
+        } 
         public float getEnergiaTotalM()
         {
             for (int i = 0; i < 20; i++)
@@ -242,14 +356,34 @@ namespace UsinaEletrica
     class Gerador
     {
 
-        public int QntTurbinas;
-        public int QntGeradores;
+        private int QntTurbinas;
+        private int QntGeradores;
         private float PotenciaPorRev;
-        public float RevPorMin;
-        public float EnergiaGerada;
-        public float GastoDeEnergia;
-        public bool Alarme;
+        private float RevPorMin;
+        private float EnergiaGerada;
+        private float GastoDeEnergia;
+        private bool Alarme;
 
+        public void setQntTurbinas(int t)
+        {
+            QntTurbinas = t;
+        }
+        public void setQntGeradores(int g)
+        {
+            QntGeradores = g;
+        }
+        public void setPotenciaPorRev(float p)
+        {
+            PotenciaPorRev = p;
+        }
+        public void setRevPorMin(float r)
+        {
+            RevPorMin = r;
+        }
+        public void setAlarme(bool e)
+        {
+            Alarme = e;
+        }
         public float getEnergiaGeradaM()
         {
             return EnergiaGerada;
@@ -266,6 +400,10 @@ namespace UsinaEletrica
         {
             return QntGeradores;
         }
+        public float getRevPorMin()
+        {
+            return RevPorMin;
+        }
 
 
 
@@ -275,10 +413,17 @@ namespace UsinaEletrica
         private float AlturaDaAgua;
         private bool Comportas;
 
-        public float getRevPorMin()
+        public Hidreletrica(int turb, int ger, float potrev)
         {
-            RevPorMin = ((float)Math.Sqrt(2 * 9.81 * AlturaDaAgua)) / 2;
-            return RevPorMin;
+            setQntTurbinas(turb);
+            setQntGeradores(ger);
+            setPotenciaPorRev(potrev);
+        }
+
+        public float RevPorMin()
+        {
+            setRevPorMin(((float)Math.Sqrt(2 * 9.81 * AlturaDaAgua)) / 2);
+            return getRevPorMin();
         }
 
 
@@ -287,41 +432,46 @@ namespace UsinaEletrica
     {
         private string MaterialUtilizado;
         private float MedidorRadiação;
-
-        public float getRevPorMin()
+        public Nuclear(int turb, int ger, float potrev)
+        {
+            setQntTurbinas(turb);
+            setQntGeradores(ger);
+            setPotenciaPorRev(potrev);
+        }
+        public float RevPorMin()
         {
             switch (MaterialUtilizado)
             {
                 case "Radio":
-                    RevPorMin = 88;
+                    setRevPorMin(88);
                     break;
                 case "Césio":
-                    RevPorMin = 137;
+                    setRevPorMin(137);
                     break;
                 case "Uranio":
-                    RevPorMin = 92;
+                    setRevPorMin(92);
                     break;
                 case "Plutonio":
-                    RevPorMin = 94;
+                    setRevPorMin(94);
                     break;
                 default:
-                    RevPorMin = 50;
+                    setRevPorMin(50);
                     break;
 
             }
-            return RevPorMin;
+            return getRevPorMin();
         }
 
         private void LigarAlarme()
         {
             if (MedidorRadiação > 80)
             {
-                Alarme = true;
+                setAlarme(true);
             }
         }
         private void DesligarAlarme()
         {
-            Alarme = false;
+            setAlarme(false);
         }
 
 
@@ -334,7 +484,12 @@ namespace UsinaEletrica
         private float Direção;
         private float DireçãoNacele;
         private float DireçãoPas;
-
+        public Eolico(int turb, int ger, float potrev)
+        {
+            setQntTurbinas(turb);
+            setQntGeradores(ger);
+            setPotenciaPorRev(potrev);
+        }
         public void setVelocidadeRelativa()
         {
             VelocidadeRelativa = (float)Math.Sqrt((float)Math.Pow(VelocidadeVento, 2) * (float)Math.Pow(VelocidadePas, 2));
@@ -348,10 +503,10 @@ namespace UsinaEletrica
             setVelocidadeRelativa();
             DireçãoPas = (float)Math.Asin(VelocidadeVento / VelocidadeRelativa);
         }
-        public float getRevPorMin()
+        public float RevPorMin()
         {
-            RevPorMin = (float)(2 * Math.PI) / VelocidadePas;
-            return RevPorMin;
+            setRevPorMin((float)(2 * Math.PI) / VelocidadePas);
+            return getRevPorMin();
 
         }
 
